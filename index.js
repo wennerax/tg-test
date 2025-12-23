@@ -2,11 +2,14 @@
 require('dotenv').config();
 const { Telegraf } = require('telegraf');
 
-const BOT_TOKEN = process.env.BOT_TOKEN;
-const MOD_CHAT_ID = process.env.MOD_CHAT_ID ? Number(process.env.MOD_CHAT_ID) : null;
+// Accept several common environment variable names so hosting providers
+// can supply credentials under different keys.
+const BOT_TOKEN = (process.env.BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN || process.env.TOKEN || '').trim() || null;
+const _MOD_CHAT_RAW = (process.env.MOD_CHAT_ID || process.env.MOD_CHAT || process.env.TG_MOD_CHAT_ID || '').toString().trim();
+const MOD_CHAT_ID = _MOD_CHAT_RAW ? Number(_MOD_CHAT_RAW) : null;
 
 if (!BOT_TOKEN || !MOD_CHAT_ID) {
-  console.error('Missing BOT_TOKEN or MOD_CHAT_ID in environment. See .env.example');
+  console.error('Missing BOT_TOKEN (or TELEGRAM_BOT_TOKEN/TOKEN) or MOD_CHAT_ID (or MOD_CHAT/TG_MOD_CHAT_ID) in environment. See .env.example');
   process.exit(1);
 }
 
